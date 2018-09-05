@@ -26,6 +26,12 @@ func init() {
 				&controllers.ImgController{},
 			),
 		),
+		beego.NSNamespace("/area",
+			beego.NSInclude(
+				&controllers.AreaController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
+
 }

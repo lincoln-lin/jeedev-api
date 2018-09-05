@@ -9,7 +9,8 @@ import (
 )
 
 func init() {
-	orm.RegisterDataBase("default", "mysql", "root:123@tcp(127.0.0.1:3306)/beego")
+	db := beego.AppConfig.String("db::default")
+	orm.RegisterDataBase("default", "mysql", db)
 }
 
 func main() {
