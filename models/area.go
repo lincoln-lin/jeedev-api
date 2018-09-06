@@ -72,7 +72,13 @@ func GetAreaById(id int64) (v *Area, err error) {
 func GetAllArea(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	rs := myredis.Conn()
-	key := "GetAllArea"
+	/*
+	key := "GetAllArea"+units.Map2String(query) + units.Array2String(fields) + units.Array2String(sortby) + units.Array2String(order) + strconv.FormatInt(offset,10) + ":" + strconv.FormatInt(limit,10)
+	fmt.Println(key)
+	key = units.GetMd5(key)
+	*/
+	key := units.GetKey("GetAllArea",query,fields,sortby,order,offset,limit)
+	fmt.Println(key)
 	value,_ := redis.Bytes(rs.Do("GET",key))
 	if value != nil {
 		//将 value bytes转为 interface
@@ -148,7 +154,7 @@ func GetAllArea(query map[string]string, fields []string, sortby []string, order
 
 			//存到redis
 			value, _ := json.Marshal(ml)  //转成json格式存起来
-			_, err := rs.Do("SET", key, value)
+			_, err := rs.Do("SET", key, value,"EX","300")
 			if err != nil {
 				fmt.Println(err)
 			}

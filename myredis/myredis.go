@@ -10,7 +10,9 @@ var pool *redis.Pool
 
 // Conn return redis connection.
 func Conn() redis.Conn {
-	return pool.Get()
+	rs := pool.Get()
+	rs.Do("SELECT", beego.AppConfig.DefaultInt("cache::dbno",0))
+	return rs
 }
 
 
