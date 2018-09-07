@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"jeedev-api/models"
 	"strconv"
 	"strings"
@@ -120,9 +121,29 @@ func (c *AreaController) GetAll() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = l
+		r := map[string]interface{}{
+			"status":200,
+			"msg":"sucess",
+			"area":"t",
+			"data":l,
+		}
+
+		c.Data["json"] = r
 	}
 	c.ServeJSON()
+}
+// ServeJSON sends a json response with encoding charset.
+func (c *AreaController) ServeJSON(encoding ...bool) {
+	var (
+		hasIndent   = false
+		hasEncoding = false
+	)
+
+	if len(encoding) > 0 && encoding[0] {
+		hasEncoding = true
+	}
+	fmt.Println(c.Data["json"])
+	c.Ctx.Output.JSON(c.Data["json"], hasIndent, hasEncoding)
 }
 
 // Put ...

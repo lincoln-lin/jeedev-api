@@ -21,10 +21,10 @@ func GetKey(args ...interface{}) (key string)  {
 			v := i.(map[string]string)
 			s += Map2String(v) + ":"
 			break
-		case []string:
+		case []string: //数组类型
 			v := i.([]string)
 			s += Array2String(v) + ":"
-		default:
+		default: //默认是字符串
 			s += i.(string) + ":"
 		}
 	}
