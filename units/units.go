@@ -4,13 +4,10 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-<<<<<<< HEAD
 	"io/ioutil"
 	"net/http"
 	"strings"
-=======
 	"strconv"
->>>>>>> a5d7aa9e8dd58b2a0458e6f636c488fa66d9f316
 )
 
 func GetKey(args ...interface{}) (key string)  {

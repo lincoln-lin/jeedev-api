@@ -4,10 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-<<<<<<< HEAD
 	"jeedev-api/lib/myhttp"
-=======
->>>>>>> a5d7aa9e8dd58b2a0458e6f636c488fa66d9f316
 	"jeedev-api/models"
 	"jeedev-api/units"
 	"strconv"
