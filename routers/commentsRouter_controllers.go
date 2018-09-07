@@ -95,6 +95,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+<<<<<<< HEAD
 	beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"],
 		beego.ControllerComments{
 			Method: "Test",
@@ -103,6 +104,8 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+=======
+>>>>>>> a5d7aa9e8dd58b2a0458e6f636c488fa66d9f316
 	beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"],
 		beego.ControllerComments{
 			Method: "Code",
