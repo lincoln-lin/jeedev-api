@@ -3,7 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"jeedev-api/lib/myhttp"
 	"jeedev-api/models"
+	"jeedev-api/units"
 	"strconv"
 	"strings"
 
@@ -163,3 +166,19 @@ func (c *AreaController) Delete() {
 	}
 	c.ServeJSON()
 }
+// @router /test [get]
+func (c *AreaController) Test() {
+	m := map[string]interface{}{
+		"a": "aa",
+		"b": 1,
+	}
+	url := "http://127.0.0.1:8080/v1/area"
+	resp , _ := myhttp.HttpPost(url,m)
+	body,_ := resp.Body() //得到的是byte
+	data :=  units.Bytes2Intaface(body)
+	fmt.Println(data)
+	c.Data["json"] = data
+
+	c.ServeJSON()
+}
+
