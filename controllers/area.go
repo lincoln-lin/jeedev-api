@@ -2,20 +2,23 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+	"github.com/astaxie/beego"
 	"jeedev-api/lib/myhttp"
 	"jeedev-api/models"
+	"jeedev-api/mymysql"
 	"jeedev-api/units"
 	"strconv"
-	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 //  AreaController operations for Area
 type AreaController struct {
 	beego.Controller
+}
+type Respon struct {
+	Status int         `json:"status"`
+	Mesage string      `json:"mesage"`
+	Data   interface{} `json:"data"`
 }
 
 // URLMapping ...
@@ -78,74 +81,41 @@ func (c *AreaController) GetOne() {
 // @Failure 403
 // @router / [get]
 func (c *AreaController) GetAll() {
-	var fields []string
-	var sortby []string
-	var order []string
-	var query = make(map[string]string)
-	var limit int64 = 10
-	var offset int64
-
+	params := map[string]interface{}{}
 	// fields: col1,col2,entity.col3
 	if v := c.GetString("fields"); v != "" {
-		fields = strings.Split(v, ",")
+		params["fields"] = v
 	}
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
-		limit = v
+		params["limit"] = v
 	}
 	// offset: 0 (default is 0)
 	if v, err := c.GetInt64("offset"); err == nil {
-		offset = v
+		params["offset"] = v
 	}
 	// sortby: col1,col2
 	if v := c.GetString("sortby"); v != "" {
-		sortby = strings.Split(v, ",")
+		params["sortby"] = v
 	}
 	// order: desc,asc
 	if v := c.GetString("order"); v != "" {
-		order = strings.Split(v, ",")
+		params["order"] = v
 	}
 	// query: k:v,k:v
 	if v := c.GetString("query"); v != "" {
-		for _, cond := range strings.Split(v, ",") {
-			kv := strings.SplitN(cond, ":", 2)
-			if len(kv) != 2 {
-				c.Data["json"] = errors.New("Error: invalid query key/value pair")
-				c.ServeJSON()
-				return
-			}
-			k, v := kv[0], kv[1]
-			query[k] = v
-		}
+		params["query"] = v
 	}
+	mymysql.TableName(models.Area{})
 
-	l, err := models.GetAllArea(query, fields, sortby, order, offset, limit)
+	l, err := mymysql.FindAll(params, models.Area{})
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		r := map[string]interface{}{
-			"status":200,
-			"msg":"sucess",
-			"area":"t",
-			"data":l,
-		}
 
-		c.Data["json"] = r
+		c.Data["json"] = Respon{200, "sucess", l}
 	}
 	c.ServeJSON()
-}
-// ServeJSON sends a json response with encoding charset.
-func (c *AreaController) ServeJSON(encoding ...bool) {
-	var (
-		hasIndent   = false
-		hasEncoding = false
-	)
-
-	if len(encoding) > 0 && encoding[0] {
-		hasEncoding = true
-	}
-	fmt.Println(c.Data["json"])
-	c.Ctx.Output.JSON(c.Data["json"], hasIndent, hasEncoding)
 }
 
 // Put ...
@@ -186,6 +156,7 @@ func (c *AreaController) Delete() {
 	}
 	c.ServeJSON()
 }
+
 // @router /test [get]
 func (c *AreaController) Test() {
 	m := map[string]interface{}{
@@ -193,12 +164,11 @@ func (c *AreaController) Test() {
 		"b": 1,
 	}
 	url := "http://127.0.0.1:8080/v1/area"
-	resp , _ := myhttp.HttpPost(url,m)
-	body,_ := resp.Body() //得到的是byte
-	data :=  units.Bytes2Intaface(body)
+	resp, _ := myhttp.HttpPost(url, m)
+	body, _ := resp.Body() //得到的是byte
+	data := units.Bytes2Intaface(body)
 	fmt.Println(data)
 	c.Data["json"] = data
 
 	c.ServeJSON()
 }
-

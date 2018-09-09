@@ -9,133 +9,130 @@ func init() {
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AppController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AppController"],
 		beego.ControllerComments{
-			Method: "Post",
-			Router: `/`,
+			Method:           "Post",
+			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AppController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AppController"],
 		beego.ControllerComments{
-			Method: "GetAll",
-			Router: `/`,
+			Method:           "GetAll",
+			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AppController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AppController"],
 		beego.ControllerComments{
-			Method: "GetOne",
-			Router: `/:id`,
+			Method:           "GetOne",
+			Router:           `/:id`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AppController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AppController"],
 		beego.ControllerComments{
-			Method: "Put",
-			Router: `/:id`,
+			Method:           "Put",
+			Router:           `/:id`,
 			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AppController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AppController"],
 		beego.ControllerComments{
-			Method: "Delete",
-			Router: `/:id`,
+			Method:           "Delete",
+			Router:           `/:id`,
 			AllowHTTPMethods: []string{"delete"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AppController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AppController"],
 		beego.ControllerComments{
-			Method: "Img",
-			Router: `/:sid`,
+			Method:           "Img",
+			Router:           `/:sid`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"],
 		beego.ControllerComments{
-			Method: "Post",
-			Router: `/`,
+			Method:           "Post",
+			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"],
 		beego.ControllerComments{
-			Method: "GetAll",
-			Router: `/`,
+			Method:           "GetAll",
+			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"],
 		beego.ControllerComments{
-			Method: "GetOne",
-			Router: `/:id`,
+			Method:           "GetOne",
+			Router:           `/:id`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"],
 		beego.ControllerComments{
-			Method: "Put",
-			Router: `/:id`,
+			Method:           "Put",
+			Router:           `/:id`,
 			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"],
 		beego.ControllerComments{
-			Method: "Delete",
-			Router: `/:id`,
+			Method:           "Delete",
+			Router:           `/:id`,
 			AllowHTTPMethods: []string{"delete"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
-<<<<<<< HEAD
 	beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:AreaController"],
 		beego.ControllerComments{
-			Method: "Test",
-			Router: `/test`,
+			Method:           "Test",
+			Router:           `/test`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-=======
->>>>>>> a5d7aa9e8dd58b2a0458e6f636c488fa66d9f316
-	beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"],
-		beego.ControllerComments{
-			Method: "Code",
-			Router: `/:sid`,
-			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"],
 		beego.ControllerComments{
-			Method: "Check",
-			Router: `/check/:sid/:code`,
+			Method:           "Code",
+			Router:           `/:sid`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"],
 		beego.ControllerComments{
-			Method: "Get",
-			Router: `/get/:key`,
+			Method:           "Check",
+			Router:           `/check/:sid/:code`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"],
 		beego.ControllerComments{
-			Method: "Set",
-			Router: `/set`,
+			Method:           "Get",
+			Router:           `/get/:key`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
+
+	beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"] = append(beego.GlobalControllerRouter["jeedev-api/controllers:ImgController"],
+		beego.ControllerComments{
+			Method:           "Set",
+			Router:           `/set`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 }

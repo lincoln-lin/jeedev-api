@@ -1,87 +1,90 @@
-package models
+package mymysql
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/astaxie/beego/orm"
 	"github.com/garyburd/redigo/redis"
 	"jeedev-api/myredis"
 	"jeedev-api/units"
 	"reflect"
-	"strconv"
 	"strings"
-
-	"github.com/astaxie/beego/orm"
 )
 
-type Area struct {
-	Id    int64  `orm:"auto" json:"id"`
-	Name  string `orm:"size(128)" json:"name"`
-	Pid   int64  `json:"pid"`
-	Level int64  `json:"level"`
+var table interface{}
+
+func TableName(T interface{}) {
+	table = T
 }
 
-func init() {
-	orm.RegisterModel(new(Area))
-}
+//query map[string]string, fields []string, sortby []string, order []string,
+//	offset int64, limit int64
+func FindAll(params map[string]interface{}, i interface{}) (ml []interface{}, err error) {
+	//var query map[string]string
+	var fields []string
+	var sortby []string
+	var order []string
+	var query = make(map[string]string)
+	var limit int64 = 10
+	var offset int64
 
-func (m *Area) TableName() string {
-	return "Area"
-}
-
-// AddArea insert a new Area into database and returns
-// last inserted Id on success.
-func AddArea(m *Area) (id int64, err error) {
-	o := orm.NewOrm()
-	id, err = o.Insert(m)
-	return
-}
-
-// GetAreaById retrieves Area by Id. Returns error if
-// Id doesn't exist
-func GetAreaById(id int64) (v *Area, err error) {
-	rs := myredis.Conn()
-	key := "GetAreaById" + strconv.FormatInt(id, 10)
-	// json数据在go中是[]byte类型，所以此处用redis.Bytes转换
-	value, _ := redis.Bytes(rs.Do("GET", key))
-	if value != nil {
-		// 将json解析成map类型
-		//v = &Area{}
-		errShal := json.Unmarshal(value, &v)
-		if errShal != nil {
-			fmt.Println(errShal)
-		}
-		fmt.Println("from rediss")
-		return v, nil
-	} else {
-		o := orm.NewOrm()
-		v = &Area{Id: id}
-		if err = o.QueryTable(new(Area)).Filter("Id", id).RelatedSel().One(v); err == nil {
-			//存到redis
-			value, _ := json.Marshal(v) //转成json格式存起来
-			_, err := rs.Do("SET", key, value)
-			if err != nil {
-				fmt.Println(err)
-			}
-			fmt.Println("from db")
-
-			return v, nil
+	// fields: col1,col2,entity.col3
+	if params["fields"] != nil {
+		if v := params["fields"].(string); v != "" {
+			fields = strings.Split(v, ",")
 		}
 	}
-	return nil, err
-}
 
-// GetAllArea retrieves all Area matches certain condition. Returns empty list if
-// no records exist
-func GetAllArea(query map[string]string, fields []string, sortby []string, order []string,
-	offset int64, limit int64) (ml []interface{}, err error) {
+	// limit: 10 (default is 10)
+	if params["limit"] != nil {
+		if v := params["limit"].(int64); v != 0 {
+			limit = v
+		}
+	}
+	// offset: 0 (default is 0)
+	if params["offset"] != nil {
+		if v := params["offset"].(int64); v != 0 {
+			offset = v
+		}
+	}
+
+	// sortby: col1,col2
+	if params["sortby"] != nil {
+		if v := params["sortby"].(string); v != "" {
+			sortby = strings.Split(v, ",")
+		}
+	}
+	// order: desc,asc
+	if params["order"] != nil {
+		if v := params["order"].(string); v != "" {
+			order = strings.Split(v, ",")
+		}
+	}
+	// query: k:v,k:v
+	if params["query"] != nil {
+
+		if q := params["query"].(string); q != "" {
+			for _, cond := range strings.Split(q, ",") {
+				kv := strings.SplitN(cond, ":", 2)
+				if len(kv) != 2 {
+					errors.New("Error: invalid query key/value pair")
+					return
+				}
+				k, v := kv[0], kv[1]
+				query[k] = v
+			}
+		}
+	}
 	rs := myredis.Conn()
 	/*
 		key := "GetAllArea"+units.Map2String(query) + units.Array2String(fields) + units.Array2String(sortby) + units.Array2String(order) + strconv.FormatInt(offset,10) + ":" + strconv.FormatInt(limit,10)
 		fmt.Println(key)
 		key = units.GetMd5(key)
 	*/
-	key := units.GetKey("GetAllArea", query, fields, sortby, order, offset, limit)
+	s := fmt.Sprintf("%s", reflect.TypeOf(table))
+	fmt.Println(s)
+	key := units.GetKey("GetAll"+s, query, fields, sortby, order, offset, limit)
 	//fmt.Println(key)
 	value, _ := redis.Bytes(rs.Do("GET", key))
 	if value != nil {
@@ -91,7 +94,7 @@ func GetAllArea(query map[string]string, fields []string, sortby []string, order
 		return ml, nil
 	} else {
 		o := orm.NewOrm()
-		qs := o.QueryTable(new(Area))
+		qs := o.QueryTable(table)
 		// query k=v
 		for k, v := range query {
 			// rewrite dot-notation to Object__Attribute
@@ -137,7 +140,7 @@ func GetAllArea(query map[string]string, fields []string, sortby []string, order
 			}
 		}
 
-		var l []Area
+		var l []interface{}
 		qs = qs.OrderBy(sortFields...).RelatedSel()
 		if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 			if len(fields) == 0 {
@@ -150,7 +153,7 @@ func GetAllArea(query map[string]string, fields []string, sortby []string, order
 					m := make(map[string]interface{})
 					val := reflect.ValueOf(v)
 					for _, fname := range fields {
-						m[fname] = val.FieldByName(fname).Interface()
+						m[strings.ToLower(fname)] = val.FieldByName(fname).Interface() //输出为小写
 					}
 					ml = append(ml, m)
 				}
@@ -167,34 +170,4 @@ func GetAllArea(query map[string]string, fields []string, sortby []string, order
 		}
 	}
 	return nil, err
-}
-
-// UpdateArea updates Area by Id and returns error if
-// the record to be updated doesn't exist
-func UpdateAreaById(m *Area) (err error) {
-	o := orm.NewOrm()
-	v := Area{Id: m.Id}
-	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Update(m); err == nil {
-			fmt.Println("Number of records updated in database:", num)
-		}
-	}
-	return
-}
-
-// DeleteArea deletes Area by Id and returns error if
-// the record to be deleted doesn't exist
-func DeleteArea(id int64) (err error) {
-	o := orm.NewOrm()
-	v := Area{Id: id}
-	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Delete(&Area{Id: id}); err == nil {
-			fmt.Println("Number of records deleted in database:", num)
-		}
-	}
-	return
 }
